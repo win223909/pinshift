@@ -434,8 +434,11 @@ function readFavorites() {
 function readPinFromUrl() {
   try {
     const params = new URLSearchParams(window.location.search);
-    const lat = Number(params.get("lat") || params.get("latitude"));
-    const lon = Number(params.get("lon") || params.get("lng") || params.get("longitude"));
+    const latValue = params.get("lat") || params.get("latitude");
+    const lonValue = params.get("lon") || params.get("lng") || params.get("longitude");
+    if (latValue === null || lonValue === null) return null;
+    const lat = Number(latValue);
+    const lon = Number(lonValue);
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
     return {
       latitude: normalizeLatitude(lat),
