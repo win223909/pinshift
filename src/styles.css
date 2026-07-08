@@ -99,6 +99,11 @@ h1 {
   line-height: 1.5;
 }
 
+.hint a {
+  color: #0d746e;
+  font-weight: 800;
+}
+
 .map {
   width: 100%;
   height: 100vh;
@@ -309,6 +314,77 @@ button:disabled {
   line-height: 1.45;
 }
 
+.setup-guide {
+  gap: 12px;
+}
+
+.setup-group {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #edf2f0;
+}
+
+.setup-group h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.setup-group ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  color: #53645f;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.search-form {
+  display: grid;
+  gap: 8px;
+}
+
+.search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.search-results {
+  display: grid;
+  gap: 8px;
+}
+
+.search-result {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid #dbe5e2;
+  border-radius: 8px;
+  text-align: left;
+  color: #22332f;
+  background: #f8fbfa;
+}
+
+.search-result strong,
+.search-result span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-result strong {
+  font-size: 14px;
+}
+
+.search-result span {
+  color: #64736f;
+  font-size: 12px;
+}
+
 .client-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -493,6 +569,10 @@ button:disabled {
   }
 
   .coordinate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-row {
     grid-template-columns: 1fr;
   }
 

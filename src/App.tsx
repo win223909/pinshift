@@ -1,6 +1,6 @@
-import { CheckCircle2, Clipboard, Crosshair, ExternalLink, LocateFixed, MapPin, Power, RefreshCcw, Star, Trash2, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Clipboard, Crosshair, ExternalLink, LocateFixed, MapPin, Power, RefreshCcw, Search, Star, Trash2, ShieldCheck } from "lucide-react";
 import L from "leaflet";
-import type { ReactNode } from "react";
+import type { FormEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type ClientId = "shadowrocket" | "stash";
@@ -15,6 +15,14 @@ type Favorite = Pin & {
   id: string;
   name: string;
   createdAt: string;
+};
+
+type SearchResult = {
+  place_id?: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+  type?: string;
 };
 
 type StatusPayload = {
@@ -36,13 +44,13 @@ const clients: Array<{ id: ClientId; name: string; moduleFile: string; importHin
     id: "shadowrocket",
     name: "Shadowrocket",
     moduleFile: "pinshift-shadowrocket.module",
-    importHint: "配置 -> 模块 -> 右上角 + -> 来自 URL",
+    importHint: "配置 → 模块 → 右上角 + → 来自 URL",
   },
   {
     id: "stash",
     name: "Stash",
     moduleFile: "pinshift-stash.stoverride",
-    importHint: "覆写 -> 安装覆写 -> 粘贴 URL；首页打开 覆写 / 改写 / MitM / 脚本",
+    importHint: "覆写 → 安装覆写 → 粘贴 URL；首页打开 覆写 / 改写 / MitM / 脚本",
   },
 ];
 
@@ -62,6 +70,10 @@ function App() {
   const [currentLocation, setCurrentLocation] = useState<Pin | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>(() => readFavorites());
   const [favoriteName, setFavoriteName] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchMessage, setSearchMessage] = useState("");
+  const [searchBusy, setSearchBusy] = useState(false);
   const [clientId, setClientId] = useState<ClientId>("shadowrocket");
   const [status, setStatus] = useState<StatusPayload | null>(null);
   const [message, setMessage] = useState(urlPin ? "已从链接导入坐标，可以直接保存或加入收藏。" : "先安装模块并开启 MITM，然后在地图上选点。");
@@ -72,6 +84,7 @@ function App() {
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const currentMarkerRef = useRef<L.Marker | null>(null);
+  const lastSearchAtRef = useRef(0);
 
   const baseUrl = useMemo(() => window.location.origin + normalizedBasePath(), []);
   const selectedClient = clients.find((client) => client.id === clientId) || clients[0];
@@ -220,6 +233,60 @@ function App() {
     setFavorites((current) => current.filter((favorite) => favorite.id !== id));
   }
 
+  async function searchPlaces(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) {
+      setSearchResults([]);
+      setSearchMessage("请输入要搜索的地点或地址。");
+      return;
+    }
+
+    setSearchBusy(true);
+    setSearchMessage("正在搜索...");
+    try {
+      const now = Date.now();
+      if (now - lastSearchAtRef.current < 1100) {
+        setSearchMessage("搜索太快了，等 1 秒再试。");
+        return;
+      }
+      lastSearchAtRef.current = now;
+      const params = new URLSearchParams({
+        q: query,
+        format: "jsonv2",
+        addressdetails: "1",
+        limit: "6",
+        "accept-language": "zh-CN",
+      });
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?${params.toString()}`, {
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = (await response.json()) as SearchResult[];
+      const results = data.filter((item) => Number.isFinite(Number(item.lat)) && Number.isFinite(Number(item.lon)));
+      setSearchResults(results);
+      setSearchMessage(results.length ? `找到 ${results.length} 个结果，点选后会移动地图。` : "没有找到匹配地点，换个关键词试试。");
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      setSearchResults([]);
+      setSearchMessage(`搜索失败：${detail}`);
+    } finally {
+      setSearchBusy(false);
+    }
+  }
+
+  function applySearchResult(result: SearchResult) {
+    const next = {
+      latitude: normalizeLatitude(Number(result.lat)),
+      longitude: normalizeLongitude(Number(result.lon)),
+      accuracy: pin.accuracy,
+    };
+    setTargetPin(next);
+    mapRef.current?.setView([next.latitude, next.longitude], Math.max(mapRef.current.getZoom(), 16));
+    setSearchQuery(result.display_name);
+    setSearchMessage(`已选中：${formatSearchTitle(result.display_name)}`);
+  }
+
   function selectMapLatLng(value: L.LatLng) {
     const display = {
       latitude: roundCoord(value.lat),
@@ -318,6 +385,31 @@ function App() {
           </ol>
         </section>
 
+        <section className="panel setup-guide">
+          <h2>代理设置说明</h2>
+          <p className="hint">Shadowsocks 只是节点类型；PinShift 是否生效，关键看 Shadowrocket / Stash 的 HTTPS 解密或 MitM 是否打开并信任证书。</p>
+          <div className="setup-group">
+            <h3>Shadowrocket</h3>
+            <ol>
+              <li>导入 PinShift 模块并启用当前代理配置。</li>
+              <li>进入「配置」→「本地文件」，点开正在使用的配置。</li>
+              <li>打开「HTTPS 解密」。如果提示证书，按提示安装证书。</li>
+              <li>到 iPhone「设置」→「通用」→「关于本机」→「证书信任设置」，完全信任 Shadowrocket 证书。</li>
+              <li>回到 Shadowrocket，重新连接代理后再测试 PinShift。</li>
+            </ol>
+          </div>
+          <div className="setup-group">
+            <h3>Stash</h3>
+            <ol>
+              <li>首页确认「覆写 / 改写 / MitM / 脚本」都已打开。</li>
+              <li>进入 Stash「设置」→「MitM」，安装 CA 证书。</li>
+              <li>到 iPhone「设置」→「通用」→「VPN 与设备管理」安装描述文件。</li>
+              <li>再到「设置」→「通用」→「关于本机」→「证书信任设置」，完全信任 Stash 证书。</li>
+              <li>回到 Stash，确认 MitM 域名包含 gs-loc.apple.com 和 gs-loc-cn.apple.com，再重新连接。</li>
+            </ol>
+          </div>
+        </section>
+
         <section className="panel">
           <h2>目标位置</h2>
           <div className="coordinate-grid">
@@ -334,7 +426,36 @@ function App() {
               <input value={pin.accuracy} inputMode="numeric" onChange={(event) => setTargetPin({ ...pin, accuracy: Number(event.target.value) })} />
             </label>
           </div>
-          <p className="hint">点击地图或拖动标记即可选点。第一版不做搜索，先保证保存和恢复闭环稳定。</p>
+          <form className="search-form" onSubmit={searchPlaces}>
+            <label>
+              <span>搜索地点</span>
+              <div className="search-row">
+                <input value={searchQuery} placeholder="地址 / 地标，例如 上海迪士尼" onChange={(event) => setSearchQuery(event.target.value)} />
+                <button className="small-button" type="submit" disabled={searchBusy}>
+                  <Search size={16} />
+                  {searchBusy ? "搜索中" : "搜索"}
+                </button>
+              </div>
+            </label>
+            <p className="hint">
+              {searchMessage || (
+                <>
+                  搜索由 <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap/Nominatim</a> 提供；点选结果后可再拖动标记微调。
+                </>
+              )}
+            </p>
+            {searchResults.length ? (
+              <div className="search-results">
+                {searchResults.map((result, index) => (
+                  <button className="search-result" type="button" key={`${result.place_id || index}-${result.lat}-${result.lon}`} onClick={() => applySearchResult(result)}>
+                    <strong>{formatSearchTitle(result.display_name)}</strong>
+                    <span>{result.display_name}</span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </form>
+          <p className="hint">点击地图或拖动标记也可以直接选点。</p>
           <div className="primary-actions">
             <button className="save-button" onClick={saveLocation} disabled={busy}>
               <Crosshair size={18} />
@@ -522,6 +643,10 @@ function formatTime(value: string) {
     minute: "2-digit",
     second: "2-digit",
   }).format(date);
+}
+
+function formatSearchTitle(value: string) {
+  return value.split(",")[0]?.trim() || value;
 }
 
 export default App;

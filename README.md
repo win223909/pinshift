@@ -66,10 +66,30 @@ gs-loc-cn.apple.com
 
 6. 回到 PinShift 页面，在地图上点选位置。
 7. 可选：点“当前位置”显示手机浏览器当前位置，或把常用地点保存到“收藏夹”。
-8. 点“一键修改定位”。
-9. 打开地图 App 或目标 App 触发定位。
-10. 回 PinShift 点“状态”，看最近 WLOC 和 Patch 是否成功。
-11. 测试结束点“一键恢复真实定位”。
+8. 可直接搜索地址/地标，或点击地图、拖动标记来选点。
+9. 点“一键修改定位”。
+10. 到 iPhone 设置里关闭“定位服务”，等待约 10 秒，再重新打开。
+11. 回 PinShift 点“重新检测”，看最近 WLOC 和 Patch 是否成功。
+12. 如果多次不成功，重启手机后再试。
+13. 测试结束点“一键恢复真实定位”。
+
+### Shadowrocket HTTPS 解密
+
+1. 导入 PinShift 模块并启用当前代理配置。
+2. 进入“配置”→“本地文件”，点开正在使用的配置。
+3. 打开“HTTPS 解密”。如果提示证书，按提示安装证书。
+4. 到 iPhone“设置”→“通用”→“关于本机”→“证书信任设置”，完全信任 Shadowrocket 证书。
+5. 回到 Shadowrocket，重新连接代理后再测试 PinShift。
+
+### Stash MitM 证书
+
+1. 首页确认“覆写 / 改写 / MitM / 脚本”都已打开。
+2. 进入 Stash“设置”→“MitM”，安装 CA 证书。
+3. 到 iPhone“设置”→“通用”→“VPN 与设备管理”安装描述文件。
+4. 再到“设置”→“通用”→“关于本机”→“证书信任设置”，完全信任 Stash 证书。
+5. 回到 Stash，确认 MitM 域名包含 `gs-loc.apple.com` 和 `gs-loc-cn.apple.com`，再重新连接。
+
+Shadowsocks 只是节点类型；PinShift 是否生效，关键看 Shadowrocket / Stash 的 HTTPS 解密或 MitM 是否打开并信任证书。
 
 ## 注意
 
