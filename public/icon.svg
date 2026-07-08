@@ -1,6 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PinShift">
-  <rect width="128" height="128" rx="28" fill="#0d746e"/>
-  <path d="M64 22c-20.4 0-37 16.6-37 37 0 24.8 37 51 37 51s37-26.2 37-51c0-20.4-16.6-37-37-37Zm0 51a14 14 0 1 1 0-28 14 14 0 0 1 0 28Z" fill="#ffffff"/>
-  <path d="M76 39h21v21" fill="none" stroke="#9de7dd" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M96 40 75 61" fill="none" stroke="#9de7dd" stroke-width="8" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="PinShift">
+  <defs>
+    <linearGradient id="bg" x1="96" x2="416" y1="64" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#172421"/>
+      <stop offset="1" stop-color="#0b1211"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="256" cy="254" r="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#49d6c9" stop-opacity=".34"/>
+      <stop offset=".55" stop-color="#49d6c9" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#49d6c9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="208" fill="url(#glow)"/>
+  <circle cx="256" cy="256" r="122" fill="none" stroke="#113f3b" stroke-width="22"/>
+  <circle cx="256" cy="256" r="86" fill="#0f7971"/>
+  <circle cx="256" cy="256" r="52" fill="#f6fffd"/>
+  <path d="M256 104c-69 0-125 56-125 125 0 85 125 179 125 179s125-94 125-179c0-69-56-125-125-125Zm0 194a69 69 0 1 1 0-138 69 69 0 0 1 0 138Z" fill="#40d7c9"/>
+  <circle cx="256" cy="229" r="35" fill="#101a18"/>
 </svg>

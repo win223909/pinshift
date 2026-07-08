@@ -1,7 +1,7 @@
 #!name=PinShift
 #!desc=一键修改 / 恢复 Apple WLOC 网络定位。适用于 Shadowrocket。
 #!homepage={{BASE_URL}}
-#!icon={{BASE_URL}}/icon.svg
+#!icon={{BASE_URL}}/icon.png
 #!category=Tools
 
 [Script]

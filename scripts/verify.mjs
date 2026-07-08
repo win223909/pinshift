@@ -3,6 +3,9 @@ import vm from "node:vm";
 
 const required = [
   "public/scripts/pinshift-proxy.js",
+  "public/icon.png",
+  "public/apple-touch-icon.png",
+  "public/favicon-32.png",
   "public/modules/pinshift-shadowrocket.module",
   "public/modules/pinshift-stash.stoverride",
   "dist/index.html",
@@ -12,17 +15,22 @@ for (const file of required) {
   if (!existsSync(file)) fail(`missing ${file}`);
 }
 
-for (const file of required.slice(1, 3)) {
+for (const file of ["public/modules/pinshift-shadowrocket.module", "public/modules/pinshift-stash.stoverride"]) {
   const content = readFileSync(file, "utf8");
   for (const text of ["PinShift", "pinshift-proxy.js?v=0.1.5", "gs-loc.apple.com", "/pinshift"]) {
     if (!content.includes(text)) fail(`${file} missing ${text}`);
   }
-  if (!content.includes("icon.svg")) fail(`${file} missing icon.svg`);
+  if (!content.includes("icon.png")) fail(`${file} missing icon.png`);
   if (content.includes("{{BASE_URL}}")) fail(`${file} still contains template token`);
 }
 
 const stash = readFileSync("public/modules/pinshift-stash.stoverride", "utf8");
 if (!stash.includes("name: PinShift") || !stash.includes("icon:")) fail("Stash override missing visible metadata");
+
+const html = readFileSync("dist/index.html", "utf8");
+for (const text of ["apple-touch-icon", "favicon-32.png", "icon.svg"]) {
+  if (!html.includes(text)) fail(`dist/index.html missing ${text}`);
+}
 
 const proxy = readFileSync("public/scripts/pinshift-proxy.js", "utf8");
 for (const text of ["pinshift_settings", "/pinshift/", "patchWlocBytes"]) {
