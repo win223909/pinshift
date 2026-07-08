@@ -371,45 +371,6 @@ function App() {
       </section>
 
       <aside className="control-pane">
-        <section className="panel activation-panel">
-          <div className="activation-heading">
-            <h2>生效步骤</h2>
-            <span>Stash / Shadowrocket 通用</span>
-          </div>
-          <p className="activation-note">使用 Shadowsocks 节点测试时也一样，修改定位后需要重新触发 iOS 定位。</p>
-          <ol>
-            <li>到 iPhone 设置里关闭「定位服务」。</li>
-            <li>等待约 10 秒，再重新打开「定位服务」。</li>
-            <li>回到 PinShift，点击「重新检测」。</li>
-            <li>如果显示成功，就是修改成功；多次不成功时，重启手机后再试。</li>
-          </ol>
-        </section>
-
-        <section className="panel setup-guide">
-          <h2>代理设置说明</h2>
-          <p className="hint">Shadowsocks 只是节点类型；PinShift 是否生效，关键看 Shadowrocket / Stash 的 HTTPS 解密或 MitM 是否打开并信任证书。</p>
-          <div className="setup-group">
-            <h3>Shadowrocket</h3>
-            <ol>
-              <li>导入 PinShift 模块并启用当前代理配置。</li>
-              <li>进入「配置」→「本地文件」，点开正在使用的配置。</li>
-              <li>打开「HTTPS 解密」。如果提示证书，按提示安装证书。</li>
-              <li>到 iPhone「设置」→「通用」→「关于本机」→「证书信任设置」，完全信任 Shadowrocket 证书。</li>
-              <li>回到 Shadowrocket，重新连接代理后再测试 PinShift。</li>
-            </ol>
-          </div>
-          <div className="setup-group">
-            <h3>Stash</h3>
-            <ol>
-              <li>首页确认「覆写 / 改写 / MitM / 脚本」都已打开。</li>
-              <li>进入 Stash「设置」→「MitM」，安装 CA 证书。</li>
-              <li>到 iPhone「设置」→「通用」→「VPN 与设备管理」安装描述文件。</li>
-              <li>再到「设置」→「通用」→「关于本机」→「证书信任设置」，完全信任 Stash 证书。</li>
-              <li>回到 Stash，确认 MitM 域名包含 gs-loc.apple.com 和 gs-loc-cn.apple.com，再重新连接。</li>
-            </ol>
-          </div>
-        </section>
-
         <section className="panel">
           <h2>目标位置</h2>
           <div className="coordinate-grid">
@@ -537,6 +498,54 @@ function App() {
             </button>
           </div>
         </section>
+
+        <details className="panel disclosure-panel activation-panel">
+          <summary>
+            <div className="activation-heading">
+              <h2>生效步骤</h2>
+              <span>Stash / Shadowrocket 通用</span>
+            </div>
+          </summary>
+          <div className="disclosure-content">
+            <p className="activation-note">使用 Shadowsocks 节点测试时也一样，修改定位后需要重新触发 iOS 定位。</p>
+            <ol>
+              <li>到 iPhone 设置里关闭「定位服务」。</li>
+              <li>等待约 10 秒，再重新打开「定位服务」。</li>
+              <li>回到 PinShift，点击「重新检测」。</li>
+              <li>如果显示成功，就是修改成功；多次不成功时，重启手机后再试。</li>
+            </ol>
+          </div>
+        </details>
+
+        <details className="panel disclosure-panel setup-guide">
+          <summary>
+            <h2>代理设置说明</h2>
+            <span>证书 / HTTPS 解密</span>
+          </summary>
+          <div className="disclosure-content">
+            <p className="hint">Shadowsocks 只是节点类型；PinShift 是否生效，关键看 Shadowrocket / Stash 的 HTTPS 解密或 MitM 是否打开并信任证书。</p>
+            <div className="setup-group">
+              <h3>Shadowrocket</h3>
+              <ol>
+                <li>导入 PinShift 模块并启用当前代理配置。</li>
+                <li>进入「配置」→「本地文件」，点开正在使用的配置。</li>
+                <li>打开「HTTPS 解密」。如果提示证书，按提示安装证书。</li>
+                <li>到 iPhone「设置」→「通用」→「关于本机」→「证书信任设置」，完全信任 Shadowrocket 证书。</li>
+                <li>回到 Shadowrocket，重新连接代理后再测试 PinShift。</li>
+              </ol>
+            </div>
+            <div className="setup-group">
+              <h3>Stash</h3>
+              <ol>
+                <li>首页确认「覆写 / 改写 / MitM / 脚本」都已打开。</li>
+                <li>进入 Stash「设置」→「MitM」，安装 CA 证书。</li>
+                <li>到 iPhone「设置」→「通用」→「VPN 与设备管理」安装描述文件。</li>
+                <li>再到「设置」→「通用」→「关于本机」→「证书信任设置」，完全信任 Stash 证书。</li>
+                <li>回到 Stash，确认 MitM 域名包含 gs-loc.apple.com 和 gs-loc-cn.apple.com，再重新连接。</li>
+              </ol>
+            </div>
+          </div>
+        </details>
       </aside>
     </main>
   );

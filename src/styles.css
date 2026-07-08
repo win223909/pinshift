@@ -276,9 +276,52 @@ button:disabled {
   line-height: 1.45;
 }
 
-.activation-panel {
+.disclosure-panel {
+  display: block;
+}
+
+.disclosure-panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.disclosure-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure-panel summary::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-right: 2px solid #53645f;
+  border-bottom: 2px solid #53645f;
+  transform: rotate(45deg);
+  transition: transform 160ms ease;
+}
+
+.disclosure-panel[open] summary::after {
+  transform: rotate(225deg);
+}
+
+.disclosure-panel summary > span {
+  margin-left: auto;
+  color: #0d746e;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.disclosure-content {
   display: grid;
   gap: 10px;
+  padding-top: 12px;
+}
+
+.activation-panel {
   border: 1px solid #d6e7e3;
   color: #22332f;
   background: #f2fbf8;
@@ -289,13 +332,15 @@ button:disabled {
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
+  min-width: 0;
 }
 
 .activation-heading span {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   color: #0d746e;
   font-size: 13px;
   font-weight: 800;
+  text-align: right;
 }
 
 .activation-note {
@@ -315,7 +360,7 @@ button:disabled {
 }
 
 .setup-guide {
-  gap: 12px;
+  gap: 0;
 }
 
 .setup-group {
@@ -566,6 +611,19 @@ button:disabled {
   .activation-heading {
     display: grid;
     gap: 4px;
+  }
+
+  .activation-heading span {
+    text-align: left;
+  }
+
+  .disclosure-panel summary {
+    align-items: flex-start;
+  }
+
+  .disclosure-panel summary > span {
+    max-width: 150px;
+    text-align: right;
   }
 
   .coordinate-grid {
