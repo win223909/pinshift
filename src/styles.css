@@ -271,6 +271,30 @@ button:disabled {
   line-height: 1.45;
 }
 
+.activation-guide {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #d6e7e3;
+  border-radius: 8px;
+  color: #22332f;
+  background: #f2fbf8;
+}
+
+.activation-guide strong {
+  font-size: 13px;
+}
+
+.activation-guide ol {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 20px;
+  color: #53645f;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .client-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

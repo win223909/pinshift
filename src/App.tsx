@@ -331,6 +331,15 @@ function App() {
               一键恢复真实定位
             </button>
           </div>
+          <div className="activation-guide">
+            <strong>生效步骤</strong>
+            <ol>
+              <li>修改定位后，到 iPhone 设置里关闭「定位服务」。</li>
+              <li>等待约 10 秒，再重新打开「定位服务」。</li>
+              <li>回到 PinShift，点击「重新检测」。</li>
+              <li>如果显示成功，就是修改成功；多次不成功时，重启手机后再试。</li>
+            </ol>
+          </div>
           <div className="message">{message}</div>
         </section>
 
