@@ -58,6 +58,7 @@ const urlPin = readPinFromUrl();
 
 function App() {
   const [pin, setPin] = useState<Pin>(urlPin || defaultPin);
+  const [markerPosition, setMarkerPosition] = useState<Pin>(urlPin || defaultPin);
   const [currentLocation, setCurrentLocation] = useState<Pin | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>(() => readFavorites());
   const [favoriteName, setFavoriteName] = useState("");
@@ -92,7 +93,7 @@ function App() {
     const map = L.map(mapElementRef.current, {
       zoomControl: false,
       attributionControl: true,
-    }).setView([pin.latitude, pin.longitude], 15);
+    }).setView([markerPosition.latitude, markerPosition.longitude], 15);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -100,14 +101,12 @@ function App() {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
-    const marker = L.marker([pin.latitude, pin.longitude], { icon, draggable: true }).addTo(map);
+    const marker = L.marker([markerPosition.latitude, markerPosition.longitude], { icon, draggable: true }).addTo(map);
     marker.on("dragend", () => {
-      const next = normalizeLatLng(marker.getLatLng());
-      setPin((current) => ({ ...current, latitude: next.latitude, longitude: next.longitude }));
+      selectMapLatLng(marker.getLatLng());
     });
     map.on("click", (event) => {
-      const next = normalizeLatLng(event.latlng);
-      setPin((current) => ({ ...current, latitude: next.latitude, longitude: next.longitude }));
+      selectMapLatLng(event.latlng);
     });
 
     mapRef.current = map;
@@ -121,8 +120,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    markerRef.current?.setLatLng([pin.latitude, pin.longitude]);
-  }, [pin.latitude, pin.longitude]);
+    markerRef.current?.setLatLng([markerPosition.latitude, markerPosition.longitude]);
+  }, [markerPosition.latitude, markerPosition.longitude]);
 
   useEffect(() => {
     window.localStorage.setItem(favoritesKey, JSON.stringify(favorites));
@@ -178,7 +177,7 @@ function App() {
           accuracy: normalizeAccuracy(position.coords.accuracy || 25),
         };
         setCurrentLocation(next);
-        setPin(next);
+        setTargetPin(next);
         mapRef.current?.setView([next.latitude, next.longitude], Math.max(mapRef.current.getZoom(), 15));
         setMessage("已在地图上显示当前位置，并填入目标位置。");
         setBusy(false);
@@ -207,17 +206,35 @@ function App() {
   }
 
   function applyFavorite(favorite: Favorite) {
-    setPin({
+    const next = {
       latitude: favorite.latitude,
       longitude: favorite.longitude,
       accuracy: favorite.accuracy,
-    });
-    mapRef.current?.setView([favorite.latitude, favorite.longitude], Math.max(mapRef.current.getZoom(), 15));
+    };
+    setTargetPin(next);
+    mapRef.current?.setView([next.latitude, next.longitude], Math.max(mapRef.current.getZoom(), 15));
     setMessage(`已选中收藏位置：${favorite.name}`);
   }
 
   function removeFavorite(id: string) {
     setFavorites((current) => current.filter((favorite) => favorite.id !== id));
+  }
+
+  function selectMapLatLng(value: L.LatLng) {
+    const display = {
+      latitude: roundCoord(value.lat),
+      longitude: roundCoord(value.lng),
+      accuracy: pin.accuracy,
+    };
+    const next = normalizePin(display);
+    setMarkerPosition(display);
+    setPin(next);
+  }
+
+  function setTargetPin(next: Pin) {
+    const normalized = normalizePin(next);
+    setPin(normalized);
+    setMarkerPosition(normalized);
   }
 
   async function callControl(url: string, okMessage: string) {
@@ -292,15 +309,15 @@ function App() {
           <div className="coordinate-grid">
             <label>
               <span>纬度</span>
-              <input value={pin.latitude} inputMode="decimal" onChange={(event) => setPin((current) => ({ ...current, latitude: normalizeLatitude(Number(event.target.value)) }))} />
+              <input value={pin.latitude} inputMode="decimal" onChange={(event) => setTargetPin({ ...pin, latitude: Number(event.target.value) })} />
             </label>
             <label>
               <span>经度</span>
-              <input value={pin.longitude} inputMode="decimal" onChange={(event) => setPin((current) => ({ ...current, longitude: normalizeLongitude(Number(event.target.value)) }))} />
+              <input value={pin.longitude} inputMode="decimal" onChange={(event) => setTargetPin({ ...pin, longitude: Number(event.target.value) })} />
             </label>
             <label>
               <span>精度 米</span>
-              <input value={pin.accuracy} inputMode="numeric" onChange={(event) => setPin((current) => ({ ...current, accuracy: normalizeAccuracy(Number(event.target.value)) }))} />
+              <input value={pin.accuracy} inputMode="numeric" onChange={(event) => setTargetPin({ ...pin, accuracy: Number(event.target.value) })} />
             </label>
           </div>
           <p className="hint">点击地图或拖动标记即可选点。第一版不做搜索，先保证保存和恢复闭环稳定。</p>
@@ -459,13 +476,6 @@ function roundCoord(value: number) {
   return Number(value.toFixed(6));
 }
 
-function normalizeLatLng(value: L.LatLng) {
-  return {
-    latitude: normalizeLatitude(value.lat),
-    longitude: normalizeLongitude(value.lng),
-  };
-}
-
 function normalizeLatitude(value: number) {
   if (!Number.isFinite(value)) return defaultPin.latitude;
   return roundCoord(Math.max(-90, Math.min(90, value)));
@@ -480,6 +490,14 @@ function normalizeLongitude(value: number) {
 function normalizeAccuracy(value: number) {
   if (!Number.isFinite(value)) return defaultPin.accuracy;
   return Math.max(1, Math.min(5000, Math.round(value)));
+}
+
+function normalizePin(value: Pin) {
+  return {
+    latitude: normalizeLatitude(value.latitude),
+    longitude: normalizeLongitude(value.longitude),
+    accuracy: normalizeAccuracy(value.accuracy),
+  };
 }
 
 function formatTime(value: string) {
