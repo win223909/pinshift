@@ -1,0 +1,30 @@
+{
+  "name": "pinshift",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build:modules && vite --host 127.0.0.1 --port 5191",
+    "dev:lan": "node scripts/dev-lan.mjs",
+    "build": "npm run build:modules && vite build",
+    "build:modules": "node scripts/build-modules.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test": "npm run build && npm run verify"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "vite": "^8.0.16"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}
+
