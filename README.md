@@ -45,6 +45,12 @@ https://win223909.github.io/pinshift/modules/pinshift-stash.stoverride
 https://win223909.github.io/pinshift/modules/pinshift-shadowrocket.module
 ```
 
+模块名称和图标使用同站点资源：
+
+```text
+https://win223909.github.io/pinshift/icon.svg
+```
+
 ## 真机测试顺序
 
 1. 在 PinShift 页面选择 Shadowrocket 或 Stash。

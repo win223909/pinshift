@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PinShift">
+  <rect width="128" height="128" rx="28" fill="#0d746e"/>
+  <path d="M64 22c-20.4 0-37 16.6-37 37 0 24.8 37 51 37 51s37-26.2 37-51c0-20.4-16.6-37-37-37Zm0 51a14 14 0 1 1 0-28 14 14 0 0 1 0 28Z" fill="#ffffff"/>
+  <path d="M76 39h21v21" fill="none" stroke="#9de7dd" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M96 40 75 61" fill="none" stroke="#9de7dd" stroke-width="8" stroke-linecap="round"/>
+</svg>
