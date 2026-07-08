@@ -48,7 +48,7 @@ https://win223909.github.io/pinshift/modules/pinshift-shadowrocket.module
 模块名称和图标使用同站点资源：
 
 ```text
-https://win223909.github.io/pinshift/icon.png?v=0.1.6
+https://win223909.github.io/pinshift/icon.png?v=0.1.7
 ```
 
 ## 真机测试顺序
