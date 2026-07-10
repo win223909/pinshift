@@ -1,5 +1,5 @@
 name: PinShift
-desc: "地图选点，一键修改 / 恢复 Apple WLOC 网络定位。适用于 Stash。"
+desc: "Map-based Apple WLOC location change and restore / 地图选点修改与恢复 Apple WLOC 定位。"
 author: win223909
 homepage: {{BASE_URL}}
 icon: {{BASE_URL}}/icon.png?v=0.1.7

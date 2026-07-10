@@ -15,7 +15,7 @@
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100vh;
 }
 
@@ -51,6 +51,41 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 14px;
+}
+
+.map-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-switch {
+  width: 76px;
+  height: 38px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(18, 31, 28, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 12px 34px rgba(15, 36, 32, 0.1);
+}
+
+.language-switch button {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  color: #53645f;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.language-switch button.active {
+  color: #ffffff;
+  background: #22332f;
 }
 
 .map-actions {
@@ -700,6 +735,10 @@ button:disabled {
     top: 12px;
   }
 
+  .map-top-actions {
+    gap: 6px;
+  }
+
   .brand {
     padding: 9px;
   }
@@ -745,5 +784,20 @@ button:disabled {
 
   .status-row {
     grid-template-columns: 22px 92px 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .map-topbar {
+    gap: 8px;
+  }
+
+  .map-top-actions .small-button {
+    width: 38px;
+    padding: 0;
+  }
+
+  .map-top-actions .small-button span {
+    display: none;
   }
 }

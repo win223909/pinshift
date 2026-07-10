@@ -1,10 +1,14 @@
 # PinShift
 
+[简体中文](README.md) | [English](README.en.md)
+
 PinShift 是一个在 iPhone 上使用的 WLOC 定位切换工具，支持 **Shadowrocket** 和 **Stash**。
 
 打开页面：<https://win223909.github.io/pinshift/>
 
 > PinShift 修改的是 Apple 网络定位返回，不是直接控制 GPS。按钮写入坐标后，还需要重新触发一次 iOS 定位。
+
+页面会根据浏览器语言自动选择中文或 English，也可以通过地图右上角的“中 / EN”随时切换；语言选择只保存在当前浏览器中。
 
 ## 三步完成
 

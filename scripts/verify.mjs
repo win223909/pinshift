@@ -8,6 +8,7 @@ const required = [
   "public/favicon-32.png",
   "public/modules/pinshift-shadowrocket.module",
   "public/modules/pinshift-stash.stoverride",
+  "README.en.md",
   "scripts/deploy-pages.mjs",
   "dist/index.html",
 ];
@@ -18,7 +19,7 @@ for (const file of required) {
 
 for (const file of ["public/modules/pinshift-shadowrocket.module", "public/modules/pinshift-stash.stoverride"]) {
   const content = readFileSync(file, "utf8");
-  for (const text of ["PinShift", "pinshift-proxy.js?v=0.1.5", "gs-loc.apple.com", "/pinshift"]) {
+  for (const text of ["PinShift", "Map-based Apple WLOC", "pinshift-proxy.js?v=0.1.5", "gs-loc.apple.com", "/pinshift"]) {
     if (!content.includes(text)) fail(`${file} missing ${text}`);
   }
   if (!content.includes("icon.png?v=0.1.7")) fail(`${file} missing versioned icon.png`);
