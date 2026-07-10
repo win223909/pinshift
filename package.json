@@ -8,6 +8,7 @@
     "dev:lan": "node scripts/dev-lan.mjs",
     "build": "npm run build:modules && vite build",
     "build:modules": "node scripts/build-modules.mjs",
+    "deploy:pages": "node scripts/deploy-pages.mjs",
     "verify": "node scripts/verify.mjs",
     "test": "npm run build && npm run verify"
   },
@@ -27,4 +28,3 @@
     "typescript": "^5.9.3"
   }
 }
-

@@ -127,7 +127,7 @@ npm test
 npx tsc --noEmit
 ```
 
-## GitHub Pages
+## 官方 GitHub Pages
 
 线上页面和模块地址：
 
@@ -138,3 +138,57 @@ https://win223909.github.io/pinshift/modules/pinshift-stash.stoverride
 ```
 
 当前线上文件发布在 `gh-pages` 分支，源代码保存在 `main` 分支。
+
+## 部署到自己的 GitHub Pages
+
+用户可以把 PinShift 完整部署到自己的 GitHub 账号，不需要 NAS、VPS 或长期运行的服务器。部署后，页面、模块和代理脚本都会使用用户自己的 GitHub Pages 地址。
+
+### 准备工作
+
+- 一个 GitHub 账号
+- 本机已经安装 Git 和 Node.js 24 或更高版本
+- 建议使用公开仓库；GitHub 免费账号部署私有仓库可能受到套餐限制
+
+### 首次部署
+
+1. 打开 [PinShift 仓库](https://github.com/win223909/pinshift)，点击右上角 **Fork**，把仓库复制到自己的 GitHub 账号。
+2. 在自己 Fork 后的仓库页面点击 **Code**，复制仓库地址。
+3. 在电脑终端运行下面的命令，把 `<你的用户名>` 和 `<仓库名>` 换成自己的信息：
+
+```bash
+git clone https://github.com/<你的用户名>/<仓库名>.git
+cd <仓库名>
+npm install
+npm run deploy:pages
+```
+
+`deploy:pages` 会自动读取当前仓库的 `origin`，生成正确的页面和模块地址，并把构建结果发布到该仓库的 `gh-pages` 分支。
+
+4. 打开自己仓库的 **Settings** → **Pages**。
+5. 在 **Build and deployment** 中把 **Source** 选择为 **Deploy from a branch**。
+6. Branch 选择 **gh-pages**，目录选择 **/(root)**，然后点击 **Save**。
+7. 等待 GitHub Pages 显示部署成功。页面地址通常是：
+
+```text
+https://<你的用户名>.github.io/<仓库名>/
+```
+
+打开自己的 PinShift 页面后，“首次安装模块”中显示的模块 URL 也应该以自己的 GitHub Pages 地址开头。请导入自己的模块 URL，不要继续使用本仓库的官方模块地址。
+
+### 后续更新
+
+先在 GitHub 上同步 Fork，再在本地仓库运行：
+
+```bash
+git pull
+npm install
+npm run deploy:pages
+```
+
+### 自部署注意事项
+
+- `npm run deploy:pages` 会完整替换 `gh-pages` 分支，该分支只用于保存构建结果，不要在里面手动存放文件。
+- 命令只发布静态文件，不会上传收藏夹、目标坐标或手机代理软件中的数据。
+- 如果 Pages 显示 404，先确认发布来源是 `gh-pages` 和 `/(root)`，再等待几分钟刷新。
+- 仓库改名后，需要重新运行 `npm run deploy:pages`，让页面路径和模块 URL 一起更新。
+- 第一次自部署建议先使用 GitHub 提供的默认 `github.io` 地址，确认页面和模块正常后再考虑自定义域名。

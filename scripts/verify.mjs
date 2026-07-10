@@ -8,6 +8,7 @@ const required = [
   "public/favicon-32.png",
   "public/modules/pinshift-shadowrocket.module",
   "public/modules/pinshift-stash.stoverride",
+  "scripts/deploy-pages.mjs",
   "dist/index.html",
 ];
 
