@@ -1,0 +1,13 @@
+#!name=PinShift
+#!desc=Map-based Apple WLOC location change and restore / 地图选点修改与恢复 Apple WLOC 定位。
+#!homepage=https://win223909.github.io/pinshift
+#!icon=https://win223909.github.io/pinshift/icon.png?v=0.1.7
+#!category=Tools
+
+[Script]
+PinShift Prepare = type=http-request,pattern=^https?:\/\/gs-loc(-cn)?\.apple\.com\/clls\/wloc(?:\?.*)?$,requires-body=0,max-size=0,timeout=10,script-path=https://win223909.github.io/pinshift/scripts/pinshift-proxy.js?v=0.1.5,argument=mode=prepare
+PinShift WLOC = type=http-response,pattern=^https?:\/\/gs-loc(-cn)?\.apple\.com\/clls\/wloc(?:\?.*)?$,requires-body=1,binary-body-mode=1,max-size=1048576,timeout=30,script-path=https://win223909.github.io/pinshift/scripts/pinshift-proxy.js?v=0.1.5,argument=mode=response
+PinShift Control = type=http-request,pattern=^https?:\/\/gs-loc(-cn)?\.apple\.com\/pinshift\/(save|clear|status),requires-body=0,max-size=0,timeout=10,script-path=https://win223909.github.io/pinshift/scripts/pinshift-proxy.js?v=0.1.5,argument=mode=control
+
+[MITM]
+hostname = %APPEND% gs-loc.apple.com, gs-loc-cn.apple.com
