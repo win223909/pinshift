@@ -150,6 +150,93 @@ h1 {
   border-left: 1px solid #d2ddda;
   background: #f8faf9;
   overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.workflow-guide {
+  display: grid;
+  gap: 12px;
+  padding: 4px 2px 2px;
+}
+
+.workflow-heading {
+  display: grid;
+  gap: 4px;
+}
+
+.workflow-heading > span {
+  color: #0d746e;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.workflow-heading h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.workflow-heading p,
+.workflow-steps p {
+  margin: 0;
+  color: #65736f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.workflow-steps {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #d9e4e1;
+  list-style: none;
+}
+
+.workflow-steps li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid #d9e4e1;
+}
+
+.workflow-steps li > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.step-number {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #0d746e;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.workflow-steps strong {
+  font-size: 14px;
+}
+
+.workflow-steps a {
+  width: fit-content;
+  margin-top: 2px;
+  color: #0d746e;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.workflow-steps a:hover {
+  text-decoration: underline;
+}
+
+#target-location,
+#module-setup,
+#status-result {
+  scroll-margin-top: 12px;
 }
 
 .panel {
@@ -274,6 +361,21 @@ button:disabled {
   background: #f8fbfa;
   font-size: 13px;
   line-height: 1.45;
+}
+
+.next-action {
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  border-left: 3px solid #0d746e;
+  color: #30403b;
+  background: #f2fbf8;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.next-action strong {
+  color: #0d746e;
 }
 
 .disclosure-panel {
@@ -477,6 +579,13 @@ button:disabled {
 
 .status-panel h2 {
   margin-bottom: 10px;
+}
+
+.status-intro {
+  margin-bottom: 10px;
+  color: #53645f;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .status-row {

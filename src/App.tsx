@@ -158,7 +158,7 @@ function App() {
   }, [currentLocation]);
 
   async function saveLocation() {
-    await callControl(saveUrl, "已写入坐标。打开地图 App 触发定位，再点状态检查。");
+    await callControl(saveUrl, "坐标已写入。现在关闭 iPhone 定位服务，等待约 10 秒后重新打开，再点「重新检测」。");
   }
 
   async function restoreLocation() {
@@ -371,8 +371,42 @@ function App() {
       </section>
 
       <aside className="control-pane">
-        <section className="panel">
-          <h2>目标位置</h2>
+        <section className="workflow-guide" aria-labelledby="workflow-title">
+          <div className="workflow-heading">
+            <span>使用方法</span>
+            <h2 id="workflow-title">三步完成定位修改</h2>
+            <p>首次使用先完成第 1 步；模块已经安装时，直接从选位置开始。</p>
+          </div>
+          <ol className="workflow-steps">
+            <li>
+              <span className="step-number">1</span>
+              <div>
+                <strong>安装并启用模块</strong>
+                <p>选择 Shadowrocket 或 Stash，并开启 HTTPS 解密 / MitM。</p>
+                <a href="#module-setup">查看首次安装</a>
+              </div>
+            </li>
+            <li>
+              <span className="step-number">2</span>
+              <div>
+                <strong>选择目标位置</strong>
+                <p>搜索地点、点击地图或选择收藏地址。</p>
+                <a href="#target-location">开始选位置</a>
+              </div>
+            </li>
+            <li>
+              <span className="step-number">3</span>
+              <div>
+                <strong>修改并重新检测</strong>
+                <p>写入坐标后，关闭定位服务约 10 秒再打开，然后检查结果。</p>
+                <a href="#status-result">查看修改结果</a>
+              </div>
+            </li>
+          </ol>
+        </section>
+
+        <section className="panel" id="target-location">
+          <h2>选择目标位置</h2>
           <div className="coordinate-grid">
             <label>
               <span>纬度</span>
@@ -427,6 +461,12 @@ function App() {
               一键恢复真实定位
             </button>
           </div>
+          {status?.settings && !status.diagnostics?.patched ? (
+            <div className="next-action" role="status">
+              <strong>坐标已写入，还差最后一步</strong>
+              <span>关闭「定位服务」约 10 秒再打开，然后到「修改结果」点击「重新检测」。</span>
+            </div>
+          ) : null}
           <div className="message">{message}</div>
         </section>
 
@@ -458,8 +498,9 @@ function App() {
           )}
         </section>
 
-        <section className="panel">
-          <h2>安装模块</h2>
+        <section className="panel" id="module-setup">
+          <h2>首次安装模块</h2>
+          <p className="hint">已经检测到 Shadowrocket 或 Stash 的用户，可以跳过这一节。</p>
           <div className="client-tabs">
             {clients.map((client) => (
               <button key={client.id} className={clientId === client.id ? "active" : ""} onClick={() => setClientId(client.id)}>
@@ -484,12 +525,13 @@ function App() {
           </div>
         </section>
 
-        <section className="panel status-panel">
-          <h2>状态</h2>
-          <StatusRow icon={<ShieldCheck size={16} />} label="代理环境" value={status?.runtime || "未连接"} />
-          <StatusRow icon={<CheckCircle2 size={16} />} label="已保存" value={status?.settings ? `${status.settings.latitude.toFixed(6)}, ${status.settings.longitude.toFixed(6)}` : "透传真实定位"} />
-          <StatusRow icon={<CheckCircle2 size={16} />} label="最近 WLOC" value={status?.diagnostics?.lastWlocAt ? formatTime(status.diagnostics.lastWlocAt) : "暂无"} />
-          <StatusRow icon={<CheckCircle2 size={16} />} label="Patch" value={status?.diagnostics?.patched ? `成功 ${status.diagnostics.hits || 0}` : status?.diagnostics?.error || "暂无"} />
+        <section className="panel status-panel" id="status-result">
+          <h2>修改结果</h2>
+          <p className="status-intro">看到客户端名称和「修改成功」后，定位修改才算完成。</p>
+          <StatusRow icon={<ShieldCheck size={16} />} label="模块连接" value={status?.runtime || "尚未检测"} />
+          <StatusRow icon={<CheckCircle2 size={16} />} label="当前模式" value={status?.settings ? "已写入目标位置" : "真实定位"} />
+          <StatusRow icon={<CheckCircle2 size={16} />} label="定位请求" value={status?.diagnostics?.lastWlocAt ? formatTime(status.diagnostics.lastWlocAt) : "暂未收到"} />
+          <StatusRow icon={<CheckCircle2 size={16} />} label="修改结果" value={formatPatchStatus(status)} />
           {lastError ? <StatusRow icon={<CheckCircle2 size={16} />} label="连接错误" value={lastError} /> : null}
           <div className="status-actions">
             <button className="small-button" onClick={refreshStatus} disabled={busy}>
@@ -502,8 +544,8 @@ function App() {
         <details className="panel disclosure-panel activation-panel">
           <summary>
             <div className="activation-heading">
-              <h2>生效步骤</h2>
-              <span>Stash / Shadowrocket 通用</span>
+              <h2>定位生效步骤</h2>
+              <span>修改后必做</span>
             </div>
           </summary>
           <div className="disclosure-content">
@@ -519,7 +561,7 @@ function App() {
 
         <details className="panel disclosure-panel setup-guide">
           <summary>
-            <h2>代理设置说明</h2>
+            <h2>首次安装说明</h2>
             <span>证书 / HTTPS 解密</span>
           </summary>
           <div className="disclosure-content">
@@ -652,6 +694,26 @@ function formatTime(value: string) {
     minute: "2-digit",
     second: "2-digit",
   }).format(date);
+}
+
+function formatPatchStatus(status: StatusPayload | null) {
+  if (!status) return "尚未检测";
+  if (status.diagnostics?.patched) {
+    const hits = status.diagnostics.hits || 0;
+    return hits ? `修改成功（${hits} 次）` : "修改成功";
+  }
+
+  const labels: Record<string, string> = {
+    "waiting-wloc": "等待 iPhone 发起定位",
+    "pass-through": "真实定位模式",
+    "empty-body": "没有读取到定位数据",
+    "gzip-body": "定位数据未能解码",
+    "no-patchable-location": "没有识别到定位坐标",
+  };
+  const error = status.diagnostics?.error;
+  if (error && labels[error]) return labels[error];
+  if (status.settings) return "等待 iPhone 发起定位";
+  return error || "尚未修改";
 }
 
 function formatSearchTitle(value: string) {
